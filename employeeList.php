@@ -10,57 +10,61 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
 <html>
     <head>
         <title>end2end: Employee list</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body>
         <a href='landingPage.php'>Return to landing page</a>
         <a href='logout.php'>Logout</a>
+        <table>
+            <thead>
+                <h2>Employee list</h2>
+                <input type="text" placeholder="Search employees...">
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Full name</th>
+                    <th>Date of Birth</th>
+                    <th>Date of Employment</th>
+                    <th>Position</th>
+                    <th>Department</th>
+                    <th>Onboarding</th>
+                </tr>
 
-        <?php
-            echo "
-                <input type='text' placeholder='Filter table'/>
-                <table>
-                    <tr>
-                        <th>Employee ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Date of birth</th>
-                        <th>Date of employement</th>
-                        <th>Role</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>John</td>
-                        <td>Doe</td>
-                        <td>1990-01-01</td>
-                        <td>2020-01-01</td>
-                        <td>Developer</td>
-                        <td>Research & Development</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane</td>
-                        <td>Smith</td>
-                        <td>1985-05-15</td>
-                        <td>2018-03-20</td>
-                        <td>Designer</td>
-                        <td>Human Resources</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Mike</td>
-                        <td>Johnson</td>
-                        <td>1978-11-30</td>
-                        <td>2015-07-10</td>
-                        <td>Manager</td>
-                        <td>Marketing</td>
-                    </tr>
-                </table>
-                <br/>
-            ";
-        ?>
+            <?php
+                //Connect to the database
+                $conn = new mysqli("localhost", "root", "", "test");
+                if($conn->connect_error)
+                    die("Connection failed: " . $conn->connect_error);
 
-        <a href='index.html'>Logout</a>
+                $result = $conn->query("SELECT
+                    name, surname, dateOfBirth, dateOfEmployement, position, department
+                FROM employees");
+
+                // Retrieve and display data
+                if ($result->num_rows > 0)
+                    while($row = $result->fetch_assoc()) {
+                        echo "<tr>
+                            <td>{$row["name"]} {$row["surname"]}</td>
+                            <td>" . $row["dateOfBirth"]. "</td>
+                            <td>" . $row["dateOfEmployement"]. "</td>
+                            <td>" . $row["position"]. "</td>
+                            <td>" . $row["department"]. "</td>
+                            <td><a href='onboarding.php?name={$row["name"]}&surname={$row["surname"]}'>View</a></td>
+                        </tr>";
+                    }
+                else
+                    echo "0 results";
+
+                mysqli_close($conn); 
+            ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="6">Limit</th>
+                </tr>
+            </tfoot>
+        </table>
         <script>
             document.querySelector('input').addEventListener('input', function() {
                 const filter = this.value.toLowerCase();
@@ -68,7 +72,7 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
                 rows.forEach($row => {
                     const cells = $row.querySelectorAll('td');
                     const match = Array.from(cells).some(cell => cell.textContent.toLowerCase().trim().includes(filter));
-                    row.style.display = match ? '' : 'none';
+                    $row.style.display = match ? '' : 'none';
                 });
             });
         </script>
