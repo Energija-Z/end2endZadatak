@@ -21,49 +21,73 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
                 <h2>Employee list</h2>
                 <input type="text" placeholder="Search employees...">
             </thead>
-            <tbody>
-                <tr>
-                    <th>Full name</th>
-                    <th>Date of Birth</th>
-                    <th>Date of Employment</th>
-                    <th>Position</th>
-                    <th>Department</th>
-                    <th>Onboarding</th>
-                </tr>
-
+            
             <?php
+                echo "<tbody>
+                    <tr>
+                        <th>Full name</th>
+                        <th>Date of Birth</th>
+                        <th>Date of Employment</th>
+                        <th>Position</th>
+                        <th>Department</th>
+                        <th>Onboarding</th>
+                    </tr>
+                ";
+
                 //Connect to the database
                 $conn = new mysqli("localhost", "root", "", "test");
                 if($conn->connect_error)
                     die("Connection failed: " . $conn->connect_error);
 
                 $result = $conn->query("SELECT
-                    name, surname, dateOfBirth, dateOfEmployement, position, department
-                FROM employees");
+                    employees.ID, employees.name, employees.surname, employees.dateOfBirth, employees.dateOfEmployment,
+                    positions.position, departments.department
+                    FROM employees
+                    JOIN positions ON employees.positionID = positions.ID
+                    JOIN departments ON employees.departmentID = departments.ID
+                    Order BY employees.surname, employees.name
+                    limit 10"
+                    .(isset($_GET['limit']) && is_numeric($_GET['limit']) ? ", ".$_GET['limit'] : "")
+                );
 
                 // Retrieve and display data
-                if ($result->num_rows > 0)
+                $countCurrentPage = $result->num_rows;
+                if ($countCurrentPage > 0)
                     while($row = $result->fetch_assoc()) {
-                        echo "<tr>
+                       echo "<tr>
                             <td>{$row["name"]} {$row["surname"]}</td>
                             <td>" . $row["dateOfBirth"]. "</td>
-                            <td>" . $row["dateOfEmployement"]. "</td>
+                            <td>" . $row["dateOfEmployment"]. "</td>
                             <td>" . $row["position"]. "</td>
                             <td>" . $row["department"]. "</td>
-                            <td><a href='onboarding.php?name={$row["name"]}&surname={$row["surname"]}'>View</a></td>
+                            <td><a href='onboarding.php?id={$row["ID"]}'>View</a></td>
                         </tr>";
                     }
                 else
                     echo "0 results";
 
-                mysqli_close($conn); 
+                echo "</tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan='6'>
+                ";
+                $countTotal = $conn->query("SELECT COUNT(*) as total FROM employees")->fetch_assoc()['total'];
+                $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? (int)$_GET['limit'] : 0;
+
+                if($countTotal > 10 * ($limit + 1))
+                    echo "<a href='employeeList.php?limit=" . ($limit + 1) . "'>View More</a>&nbsp;";
+
+                if($limit > 1)
+                    echo "<a href='employeeList.php?limit=" . ($limit - 1) . "'>View Less</a>";
+                else if($limit > 0)
+                    echo "<a href='employeeList.php'>View Less</a>";
+
+                mysqli_close($conn);
+                echo "
+                        </th>
+                    </tr>
+                </tfoot>";
             ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="6">Limit</th>
-                </tr>
-            </tfoot>
         </table>
         <script>
             document.querySelector('input').addEventListener('input', function() {
