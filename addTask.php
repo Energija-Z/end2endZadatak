@@ -13,16 +13,17 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
 <!DOCTYPE html>
 <html>
     <head>
-        <title>end2end: početna stranica</title>
+        <title>end2end: dodaj zadatak</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body>
-        <h1>Dobro došli u end2end.</h1>
-        <ul>
-            <li><a href='employeeList.php'>Popis zaposlenika</a></li>
-            <li><a href='addEmployee.php'>Dodaj zaposlenika</a></li>
-        </ul>
+        <a href='.' onclick="window.history.back()">Vrati se na prethodnu stranicu</a>
         <a href='logout.php'>Odjava</a>
+        <h1>Dodaj novi zadatak</h1>
+        <form method="POST" action="">
+
+            <button type="submit">Dodaj zadatak</button>
+        </form>
     </body>
 </html>

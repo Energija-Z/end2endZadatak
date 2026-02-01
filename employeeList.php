@@ -9,28 +9,28 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
 <!DOCTYPE html>
 <html>
     <head>
-        <title>end2end: Employee list</title>
+        <title>end2end: popis zaposlenika</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body>
-        <a href='landingPage.php'>Return to landing page</a>
-        <a href='logout.php'>Logout</a>
+        <a href='.' onclick="window.history.back()">Vrati se na prethodnu stranicu</a>
+        <a href='logout.php'>Odjava</a>
         <table>
             <thead>
-                <h2>Employee list</h2>
-                <input type="text" placeholder="Search employees...">
+                <h2>Popis zaposlenika</h2>
+                <input type="text" placeholder="Pretraži zaposlenike...">
             </thead>
             
             <?php
                 echo "<tbody>
                     <tr>
-                        <th>Full name</th>
-                        <th>Date of Birth</th>
-                        <th>Date of Employment</th>
-                        <th>Position</th>
-                        <th>Department</th>
-                        <th>Onboarding</th>
+                        <th>Ime i prezime</th>
+                        <th>Datum rođenja</th>
+                        <th>Datum zaposlenja</th>
+                        <th>Uloga</th>
+                        <th>Odjel</th>
+                        <th>Zadaci</th>
                     </tr>
                 ";
 
@@ -99,6 +99,26 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
                     $row.style.display = match ? '' : 'none';
                 });
             });
+            document.querySelectorAll('th').forEach(th => {
+                th.addEventListener('click', function() {
+                    const table = this.closest('table');
+                    const rows = Array.from(table.querySelectorAll('tr:nth-child(n+2)'));
+                    const index = Array.from(this.parentNode.children).indexOf(this);
+                    const asc = !this.classList.contains('asc');
+                        
+                    rows.sort((a, b) => {
+                        const cellA = a.children[index].textContent.trim().toLowerCase();
+                        const cellB = b.children[index].textContent.trim().toLowerCase();
+                        return asc ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                    });
+                    
+                    rows.forEach(row => table.appendChild(row));
+                    
+                    table.querySelectorAll('th').forEach(th => th.classList.remove('asc', 'desc'));
+                    this.classList.add(asc ? 'asc' : 'desc');
+                });
+            });
+
         </script>
     </body>
 </html>
