@@ -21,9 +21,5 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
         <a href='.' onclick="window.history.back()">Vrati se na prethodnu stranicu</a>
         <a href='logout.php'>Odjava</a>
         <h1>Dodaj novi zadatak</h1>
-        <form method="POST" action="">
-
-            <button type="submit">Dodaj zadatak</button>
-        </form>
     </body>
 </html>

@@ -60,7 +60,7 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
                             <td>" . $row["dateOfEmployment"]. "</td>
                             <td>" . $row["position"]. "</td>
                             <td>" . $row["department"]. "</td>
-                            <td><a href='onboarding.php?id={$row["ID"]}'>View</a></td>
+                            <td><a href='onboarding.php?name={$row["name"]}&surname={$row["surname"]}'>View</a></td>
                         </tr>";
                     }
                 else
