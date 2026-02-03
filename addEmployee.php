@@ -20,7 +20,7 @@
         )";
         echo "<div class='container mt-4 fixed-top'>";
         if ($conn->query($sql) === TRUE)
-            echo "<p class='alert alert-success'>Employee added successfully!</p><br/>";
+            echo "<p class='alert alert-success'>Zaposlenik je dodan.</p><br/>";
         else
             echo "<p class='alert alert-danger'>Error: {$sql}<br>{$conn->error}</p><br/>";
         $conn->close();
