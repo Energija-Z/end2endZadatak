@@ -1,8 +1,5 @@
 <?php
     session_start();
-    // If credentials are correct, start session
-    if(isset($_SESSION['loggedin']) || ($_POST['username'] === "root" && $_POST['password'] === "root"))
-        $_SESSION['loggedin'] = true;
 
     // If session started, display welcome message
     if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){    
@@ -24,9 +21,9 @@
         )";
 
         if ($conn->query($sql) === TRUE)
-            echo "<p class='alert alert-success'>Task added successfully!</p>";
+            echo "<p class='alert alert-success'>Zadatak je dodan!</p>";
         else
-            echo "<p class='alert alert-danger'>Error: {$sql}<br>{$conn->error}</p>";
+            echo "<p class='alert alert-danger'>Greška: {$sql}<br>{$conn->error}</p>";
         $conn->close();
     }
 ?>
@@ -36,7 +33,8 @@
         <title>end2end: dodaj zadatak</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <a href='.' onclick="window.history.back()">Vrati se na prethodnu stranicu</a>
@@ -88,6 +86,7 @@
                             <th>Status</th>
                             <th>Ovisi o zadatku na ID-u</th>
                             <th>Datum offseta (dana od zaposlenja)</th>
+                            <th>Spremi redak</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,13 +101,30 @@
                         $taskArray[$row['id']] = $taskDueDate;
                         echo "
                             <tr>
-                                <td>{$row["id"]}</td>
-                                <td><input type='text' name='task_{$row['id']}' value='{$row["task"]}'></td>
-                                <td><textarea type='text' name='description_{$row['id']}'>{$row["description"]}</textarea></td>
-                                <td><input type='text' name='requirements_{$row['id']}' value='{$row["requirements"]}'></td>
-                                <td><input type='checkbox' name='finished_{$row['id']}' value='1'" . ($row["finished"] ? " checked" : "") . "></td>
-                                <td><input type='number' name='taskID_{$row['id']}' value='" . (is_null($row['taskID']) ? "" : $row['taskID']) . "'></td>
-                                <td><input type='number' name='dateOffset_{$row['id']}' value='{$row["dateOffset"]}'/> dana (do: {$taskDueDate})</td>
+                                <td>
+                                    {$row["id"]} <input type='hidden' name='id_{$row['id']}' value='{$row["id"]}'>
+                                </td>
+                                <td>
+                                    <input type='text' name='task_{$row['id']}' value='{$row["task"]}'>
+                                </td>
+                                <td>
+                                    <textarea type='text' name='description_{$row['id']}'>{$row["description"]}</textarea>
+                                </td>
+                                <td>
+                                    <input type='text' name='requirements_{$row['id']}' value='{$row["requirements"]}'>
+                                </td>
+                                <td>
+                                    <input type='checkbox' name='finished_{$row['id']}' value='1'" . ($row["finished"] ? " checked" : "") . ">
+                                </td>
+                                <td>
+                                    <input type='number' name='taskID_{$row['id']}' value='" . (is_null($row['taskID']) ? "" : $row['taskID']) . "'>
+                                </td>
+                                <td>
+                                    <input type='number' name='dateOffset_{$row['id']}' value='{$row["dateOffset"]}'/> dana (do: {$taskDueDate})
+                                </td>
+                                <td>
+                                    <input type='submit' formaction='saveTask.php?id={$employeeID}&taskID={$row['id']}' value='Spremi'/>
+                                </td>
                             </tr>
                         ";
                     }
@@ -120,7 +136,7 @@
                 if($result->num_rows == 0)
                     echo "Zaposlenik nema zadataka.<br/>Možete dodati nove zadatke u <a href='addTask.php?id={$employeeID}'>onboarding procesu</a>.";
 
-                echo "<input type='submit' value='Spremi'/>";
+                echo "<input type='submit' value='Spremi' disabled/>";
             }
             else echo "Zaposlenik nije pronađen.";
             mysqli_close($conn);
@@ -180,6 +196,7 @@
             tbody.appendChild(row);
 
             document.querySelector("table tbody").parentNode.replaceChild(tbody, document.querySelector("table tbody"));
+            document.querySelector("input[type='submit']").disabled = false;
             document.querySelector("button").disabled = true;
         });
         </script>
