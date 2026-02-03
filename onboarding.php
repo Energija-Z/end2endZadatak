@@ -57,7 +57,7 @@
                         $arr = $result->fetch_assoc();
                         echo "
                             <h1>{$name} {$surname}, zaposlen/a {$arr['dateOfEmployment']}</h1>
-                            <h2>{$arr['position']}, department {$arr['department']}</h2>
+                            <h2>{$arr['position']}, odjel {$arr['department']}</h2>
                         ";
 
                         $taskID = $arr['id'];

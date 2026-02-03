@@ -90,7 +90,7 @@
             // Remove success/error message after 3 seconds
             setTimeout(() => {
                 const alertBox = document.querySelector('.container.mt-4.fixed-top');
-                if (alertBox) {
+                if (alertBox){
                     alertBox.remove();
                 }
             }, 3000);
