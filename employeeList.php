@@ -1,10 +1,10 @@
 <?php
-session_start();
+    session_start();
 
-if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
-    header('Location: index.html');
-    exit;
-}
+    if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
+        header('Location: index.html');
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html>
@@ -12,6 +12,7 @@ if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true){
         <title>end2end: popis zaposlenika</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
     </head>
     <body>
         <a href='.' onclick="window.history.back()">Vrati se na prethodnu stranicu</a>
